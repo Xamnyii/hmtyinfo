@@ -3,21 +3,25 @@
 import { useEffect } from 'react';
 import { useTransitionRouter } from "next-transition-router";
 
-export default function Home() {
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
 	const router = useTransitionRouter();
 
 	useEffect(() => {
-		// Verificar si hay sesion activa en localStorage
 		const isLogged = localStorage.getItem('hmtyauth_logged') === 'true';
-		
 		if (isLogged) {
-			// Si hay sesion, redirigir a mainpage
 			router.push('/main/mainpage');
-		} else {
-			// Si no hay sesion, redirigir a mainauth
-			router.push('/mainauth');
 		}
 	}, [router]);
 
-	return null; // No renderizar nada mientras se redirige
+	const isLogged = typeof window !== 'undefined' ? localStorage.getItem('hmtyauth_logged') === 'true' : false;
+	
+	if (isLogged) {
+		return null;
+	}
+
+	return <>{children}</>;
 }
