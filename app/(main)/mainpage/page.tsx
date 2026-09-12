@@ -17,6 +17,7 @@ export default function MainPage() {
   };
 
   //hola
+  //commit
   if (!user) return <div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="text-gray-500">Cargando perfil...</div></div>;
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
