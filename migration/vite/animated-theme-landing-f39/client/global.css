@@ -1,0 +1,204 @@
+/** @import must precede all other statements */
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
+
+@import "tailwindcss";
+
+/* Theme, content globs, and plugins are declared in tailwind.config.ts. */
+@config "../tailwind.config.ts";
+
+@layer base {
+  /**
+   * Tailwind CSS theme
+   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
+   * A different format will require also updating the theme in tailwind.config.ts.
+  */
+  :root {
+    --background: 84 35% 93%;
+    --foreground: 160 45% 10%;
+
+    --card: 70 40% 96%;
+    --card-foreground: 160 45% 10%;
+
+    --popover: 70 40% 96%;
+    --popover-foreground: 160 45% 10%;
+
+    --primary: 150 55% 34%;
+    --primary-foreground: 60 40% 98%;
+
+    --secondary: 70 35% 88%;
+    --secondary-foreground: 160 45% 12%;
+
+    --muted: 70 30% 90%;
+    --muted-foreground: 155 20% 34%;
+
+    --accent: 150 45% 85%;
+    --accent-foreground: 160 45% 12%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 60 40% 98%;
+
+    --border: 150 25% 78%;
+    --input: 150 25% 78%;
+    --ring: 150 55% 34%;
+
+    --radius: 0.9rem;
+
+    --sidebar-background: 70 40% 96%;
+    --sidebar-foreground: 160 45% 12%;
+    --sidebar-primary: 150 55% 34%;
+    --sidebar-primary-foreground: 60 40% 98%;
+    --sidebar-accent: 150 45% 88%;
+    --sidebar-accent-foreground: 160 45% 12%;
+    --sidebar-border: 150 25% 80%;
+    --sidebar-ring: 150 55% 34%;
+
+    /* RamRod brand — light mode background & orb glow */
+    --brand-bg-from: 150 45% 82%;
+    --brand-bg-to: 55 55% 90%;
+    --brand-blob-1: 150 60% 75%;
+    --brand-blob-2: 60 65% 85%;
+    --brand-orb-edge: 78 70% 58%;
+    --brand-corner: 50 55% 92%;
+  }
+
+  .dark {
+    --background: 160 45% 7%;
+    --foreground: 70 30% 95%;
+
+    --card: 160 40% 10%;
+    --card-foreground: 70 30% 95%;
+
+    --popover: 160 40% 10%;
+    --popover-foreground: 70 30% 95%;
+
+    --primary: 150 55% 45%;
+    --primary-foreground: 160 45% 8%;
+
+    --secondary: 160 35% 14%;
+    --secondary-foreground: 70 30% 95%;
+
+    --muted: 160 30% 14%;
+    --muted-foreground: 150 20% 65%;
+
+    --accent: 160 40% 16%;
+    --accent-foreground: 70 30% 95%;
+
+    --destructive: 0 62% 42%;
+    --destructive-foreground: 70 30% 95%;
+
+    --border: 160 30% 20%;
+    --input: 160 30% 20%;
+    --ring: 150 55% 45%;
+
+    --sidebar-background: 160 45% 8%;
+    --sidebar-foreground: 70 30% 92%;
+    --sidebar-primary: 150 55% 45%;
+    --sidebar-primary-foreground: 160 45% 8%;
+    --sidebar-accent: 160 35% 14%;
+    --sidebar-accent-foreground: 70 30% 92%;
+    --sidebar-border: 160 30% 18%;
+    --sidebar-ring: 150 55% 45%;
+
+    /* RamRod brand — dark mode background & orb glow */
+    --brand-bg-from: 165 55% 10%;
+    --brand-bg-to: 150 40% 20%;
+    --brand-blob-1: 165 55% 16%;
+    --brand-blob-2: 150 50% 24%;
+    --brand-orb-edge: 168 60% 45%;
+    --brand-corner: 165 45% 14%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family:
+      "Manrope",
+      ui-sans-serif,
+      system-ui,
+      sans-serif;
+  }
+
+  :where(p, span, li, h1, h2, h3, h4, h5, h6, a, button, label, td, th) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  pre,
+  code {
+    overflow-x: auto;
+    white-space: pre;
+  }
+}
+
+@layer utilities {
+  @keyframes blob-float-1 {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    33% {
+      transform: translate(6%, 8%) scale(1.12);
+    }
+    66% {
+      transform: translate(-5%, 4%) scale(0.95);
+    }
+  }
+
+  @keyframes blob-float-2 {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    33% {
+      transform: translate(-8%, -5%) scale(0.9);
+    }
+    66% {
+      transform: translate(4%, -8%) scale(1.15);
+    }
+  }
+
+  @keyframes orb-breathe {
+    0%,
+    100% {
+      transform: scale(1);
+      filter: brightness(1);
+    }
+    50% {
+      transform: scale(1.035);
+      filter: brightness(1.08);
+    }
+  }
+
+  @keyframes orb-glow {
+    0%,
+    100% {
+      opacity: 0.65;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.95;
+      transform: scale(1.08);
+    }
+  }
+
+  .animate-blob-1 {
+    animation: blob-float-1 18s ease-in-out infinite;
+  }
+
+  .animate-blob-2 {
+    animation: blob-float-2 22s ease-in-out infinite;
+  }
+
+  .animate-orb-breathe {
+    animation: orb-breathe 6s ease-in-out infinite;
+  }
+
+  .animate-orb-glow {
+    animation: orb-glow 6s ease-in-out infinite;
+  }
+}
