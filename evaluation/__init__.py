@@ -1,0 +1,1 @@
+"""Evaluation-only utilities. Product code must never import this package."""
