@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
+import { Walkthrough } from "@/components/onboarding";
 import { AnimatedBackground } from "./AnimatedBackground";
 import { MainHeader } from "./MainHeader";
 
@@ -11,6 +12,7 @@ export function RamRodFrame({ children }: { children: ReactNode }) {
         <AnimatedBackground />
         <MainHeader />
         <main className="relative z-10 flex flex-1 flex-col">{children}</main>
+        <Walkthrough autoStart />
       </div>
       <Toaster />
     </ThemeProvider>

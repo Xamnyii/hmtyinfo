@@ -337,7 +337,7 @@ export function InvestigationWorkspace() {
           </div>
           {selectedFile?.parsed ? <InvoiceDetail invoice={selectedFile.parsed} /> : <div className="border border-dashed border-ramrod-foreground/25 px-5 py-12 text-center text-sm text-ramrod-muted-foreground">Selecciona un XML procesado para revisar sus datos extraídos.</div>}
 
-          <section className="mt-8 border-t border-ramrod-foreground/15 pt-5" aria-labelledby="investigation-summary-title">
+          <section className="mt-8 border-t border-ramrod-foreground/15 pt-5" data-tour="evidence-trail" aria-labelledby="investigation-summary-title">
             <div className="flex flex-wrap items-baseline justify-between gap-3">
               <div>
                 <p className="text-[10px] font-bold tracking-[0.14em] text-ramrod-primary">INVESTIGATION FINDINGS</p>
@@ -385,7 +385,7 @@ export function InvestigationWorkspace() {
               )}
             </div>
 
-            <div className="mt-5 border-t border-ramrod-foreground/12 pt-4">
+            <div className="mt-5 border-t border-ramrod-foreground/12 pt-4" data-tour="money-flow">
               <p className="text-[10px] font-bold tracking-[0.12em] text-ramrod-muted-foreground">CFDI RELATIONSHIPS</p>
               <p className="mt-1 text-xs text-ramrod-foreground">{draft.relationships.length} relaciones de facturación declaradas en CFDI.</p>
               <p className="mt-1 text-[10px] leading-relaxed text-ramrod-muted-foreground">{financialTransactionCount > 0 ? `${financialTransactionCount} transacciones financieras verificadas por una herramienta MCP.` : "No hay datos de transacciones financieras verificadas en este caso."}</p>

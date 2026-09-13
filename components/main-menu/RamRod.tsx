@@ -59,7 +59,7 @@ export function RamRod() {
         <div className="relative flex flex-col items-center gap-4">
           <div className="relative flex items-center justify-center">
             <div className={`ramrod-orb-glow${isListening ? " ramrod-orb-glow-active" : ""}`} />
-            <div className="ramrod-orb" />
+            <div className="ramrod-orb" data-tour="ai-agent" />
           </div>
           <AgentState status={mockAgentStatus} />
         </div>
