@@ -167,7 +167,7 @@ export function CfdiIntake() {
   };
 
   return (
-    <section className="w-full max-w-xl" aria-labelledby="xml-intake-title">
+    <section className="w-full max-w-xl" data-tour="new-investigation" aria-labelledby="xml-intake-title">
       <input
         ref={inputRef}
         type="file"
@@ -179,6 +179,7 @@ export function CfdiIntake() {
       <div
         role="button"
         tabIndex={0}
+        data-tour="evidence"
         onClick={() => inputRef.current?.click()}
         onKeyDown={handleKeyDown}
         onDragEnter={(event) => {

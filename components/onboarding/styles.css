@@ -1,0 +1,131 @@
+
+.walkthrough-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(2, 12, 15, 0.56);
+  backdrop-filter: blur(2px);
+  pointer-events: auto;
+}
+
+.walkthrough-spotlight {
+  position: fixed;
+  z-index: 130;
+  border-radius: 14px;
+  border: 1px solid hsl(var(--ramrod-primary));
+  box-shadow: 0 0 0 999px rgba(2, 10, 12, 0.56), 0 0 0 2px hsl(var(--ramrod-primary)), 0 0 34px hsl(var(--ramrod-primary) / 0.6);
+  pointer-events: none;
+}
+
+.walkthrough-tooltip {
+  position: fixed;
+  z-index: 150;
+  width: min(340px, calc(100vw - 48px));
+}
+
+.walkthrough-tooltip-center {
+  transform: translate(-50%, -50%);
+}
+
+.walkthrough-tooltip-card {
+  border: 1px solid color-mix(in srgb, hsl(var(--ramrod-primary)) 78%, transparent);
+  background: color-mix(in srgb, hsl(var(--ramrod-card)) 96%, transparent);
+  color: hsl(var(--ramrod-foreground));
+  border-radius: 16px;
+  box-shadow: 0 36px 110px rgba(0, 0, 0, 0.86);
+  padding: 14px;
+  backdrop-filter: blur(10px);
+}
+
+.walkthrough-tooltip-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.walkthrough-progress {
+  font-size: 10px;
+  font-weight: 800;
+  color: hsl(var(--ramrod-primary));
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.walkthrough-tooltip-body h3 {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: 900;
+  color: hsl(var(--ramrod-foreground));
+}
+
+.walkthrough-tooltip-body p {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: hsl(var(--ramrod-muted-foreground));
+}
+
+.walkthrough-tooltip-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 16px;
+  flex-wrap: nowrap;
+}
+
+.walkthrough-primary-button,
+.walkthrough-secondary-button,
+.walkthrough-link-button {
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  transition: transform 280ms ease, border-color 280ms ease, background 280ms ease;
+}
+
+.walkthrough-primary-button {
+  border: 1px solid hsl(var(--ramrod-primary));
+  background: hsl(var(--ramrod-primary));
+  color: hsl(var(--ramrod-primary-foreground));
+}
+
+.walkthrough-secondary-button {
+  border: 1px solid hsl(var(--ramrod-foreground) / 0.3);
+  background: transparent;
+  color: hsl(var(--ramrod-foreground));
+}
+
+.walkthrough-link-button {
+  border: none;
+  background: transparent;
+  color: hsl(var(--ramrod-muted-foreground));
+}
+
+.walkthrough-primary-button:hover,
+.walkthrough-secondary-button:hover,
+.walkthrough-link-button:hover {
+  transform: translateY(-2px);
+}
+
+.walkthrough-icon-button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid hsl(var(--ramrod-foreground) / 0.25);
+  background: transparent;
+  color: hsl(var(--ramrod-foreground));
+}
+
+.walkthrough-arrow {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: hsl(var(--ramrod-card));
+  border-left: 1px solid hsl(var(--ramrod-primary));
+  border-top: 1px solid hsl(var(--ramrod-primary));
+  transform: rotate(45deg);
+  left: -6px;
+  top: 50%;
+}

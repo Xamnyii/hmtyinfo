@@ -27,7 +27,7 @@ export function McpActivityPanel({ status, tools, executions, decisions }: McpAc
   const recentDecisions = decisions.filter((decision) => decision.type === "tool_skipped").slice(-2);
 
   return (
-    <section className="border-t border-ramrod-foreground/15 pt-5" aria-labelledby="mcp-activity-title">
+    <section className="border-t border-ramrod-foreground/15 pt-5" data-tour="mcp-tools" aria-labelledby="mcp-activity-title">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Wrench className="h-3.5 w-3.5 text-ramrod-primary" aria-hidden="true" />
