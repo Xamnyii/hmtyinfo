@@ -9,7 +9,7 @@ fi
 
 if [[ $# -ne 2 ]]; then
   echo "Usage: $0 <repository-url> <domain>"
-  echo "Example: $0 git@github.com:account/hmtyinfo.git app.example.com"
+  echo "Example: $0 git@github.com:Xamnyii/hmtyinfo.git rmrd.tech"
   exit 1
 fi
 
@@ -52,6 +52,7 @@ cat > .env.production <<EOF
 MONGODB_URI=mongodb://${MONGO_APP_USER}:${MONGO_APP_PASSWORD}@127.0.0.1:27017/${MONGO_DB}?authSource=${MONGO_DB}
 MONGODB_DB=${MONGO_DB}
 # MCP_SERVER_URL=http://127.0.0.1:PORT/mcp
+# CFDI_ANALYZER_URL=http://127.0.0.1:8001
 EOF
 chown "$APP_USER:$APP_USER" .env.production
 chmod 600 .env.production

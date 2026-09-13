@@ -241,7 +241,7 @@ export function CfdiIntake() {
         </div>
       )}
 
-      {canStartInvestigation && (
+      {analysis && analysis.metrics.validFiles > 0 && !isAnalyzing && (
         <div className="mt-4 border-t border-ramrod-foreground/15 pt-4">
           <dl className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-4">
             <div><dt className="text-[9px] font-bold tracking-[0.12em] text-ramrod-muted-foreground">ARCHIVOS</dt><dd className="mt-1 text-sm font-bold text-ramrod-foreground">{uploadedFiles.length}</dd></div>

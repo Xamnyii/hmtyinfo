@@ -32,7 +32,7 @@ Se ha implementado un sistema completo de autenticacion profesional con las sigu
 
 ```
 hmtyinfo/
-├── .env.local                    # Configuracion de MongoDB
+├── .env                          # Configuracion de MongoDB
 ├── app/
 │   ├── page.tsx                 # Redirige a mainauth o mainpage segun sesion
 │   ├── api/
@@ -76,7 +76,7 @@ hmtyinfo/
 
 ## Configuracion
 
-### Variables de Entorno (.env.local)
+### Variables de Entorno (.env)
 
 ```
 MONGODB_URI=mongodb://localhost:27017/hmtyauth

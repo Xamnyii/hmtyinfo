@@ -36,7 +36,7 @@ function isStoredCaseDraft(value: unknown): value is InvestigationCaseDraft {
     isRecord(value.metrics) &&
     isRecord(value.summary) &&
     isRecord(value.totalAmountByCurrency) &&
-    Array.isArray(value.detectedCompanies),
+    Array.isArray(value.detectedCompanies)
   );
 }
 
