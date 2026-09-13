@@ -14,6 +14,7 @@ const AnimationSection = memo(() => (
 		<div className={styles.artCopy}><h2>Valida cada factura con confianza.</h2></div>
 	</section>
 ));
+AnimationSection.displayName = "AnimationSection";
 
 export default function RegisterPage() {
 	const router = useTransitionRouter();

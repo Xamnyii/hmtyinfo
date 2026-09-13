@@ -38,10 +38,6 @@ function downloadFile(name: string, content: string, mimeType: string): void {
   URL.revokeObjectURL(url);
 }
 
-function findingsForEntity(bundle: ForensicRunBundle, entity: string): ForensicFinding[] {
-  return bundle.findings.filter((finding) => finding.entities.includes(entity));
-}
-
 function answerCaseQuestion(bundle: ForensicRunBundle, question: string): string {
   const normalized = question.toLocaleLowerCase("en-US");
   const findingMatch = bundle.findings.find((finding) => normalized.includes(finding.findingId.toLowerCase()) || finding.entities.some((entity) => normalized.includes(entity.toLowerCase())));

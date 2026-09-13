@@ -12,6 +12,7 @@ import type {
   ParsedCfdi,
   SignalSeverity,
 } from "./cfdi-types";
+import { analyzeCfdiFilesInBrowser } from "./browser-cfdi-analyzer";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -246,11 +247,14 @@ export async function analyzeCfdiFiles(files: File[]): Promise<CfdiAnalysisResul
   try {
     response = await fetch("/api/cfdi/analyze", { method: "POST", body: formData });
   } catch {
-    throw new CfdiAnalysisClientError("El servicio de análisis no está disponible.");
+    return analyzeCfdiFilesInBrowser(files);
   }
 
   const payload: unknown = await response.json().catch(() => null);
   if (!response.ok) {
+    if (response.status === 503 || response.status === 504) {
+      return analyzeCfdiFilesInBrowser(files);
+    }
     throw new CfdiAnalysisClientError(getErrorMessage(payload) || "RamRod no pudo analizar los XML.");
   }
   if (!isRecord(payload) || payload.ok !== true) {

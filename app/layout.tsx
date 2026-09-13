@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
 import { Providers } from "./providers";
 import "./globals.css";
-
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "HMTY - Protege tus facturas",
@@ -20,7 +14,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="es"
-      className={`${montserrat.variable} h-full antialiased`}
+      className="h-full antialiased"
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
         <Providers>

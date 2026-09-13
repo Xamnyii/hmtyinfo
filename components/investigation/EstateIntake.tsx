@@ -13,8 +13,10 @@ const stages = ["VALIDATING", "INDEXING", "DETECTING", "INVESTIGATING", "CHALLEN
 
 type EstateStage = typeof stages[number] | "IDLE" | "ERROR";
 
-function fileTypeIcon(name: string) {
-  return name.toLowerCase().endsWith(".zip") ? FileArchive : Database;
+function EstateFileIcon({ name }: { name: string | null }) {
+  if (!name) return <Upload className="h-4 w-4 shrink-0 text-ramrod-primary" aria-hidden="true" />;
+  if (name.toLowerCase().endsWith(".zip")) return <FileArchive className="h-4 w-4 shrink-0 text-ramrod-primary" aria-hidden="true" />;
+  return <Database className="h-4 w-4 shrink-0 text-ramrod-primary" aria-hidden="true" />;
 }
 
 function runIdFromBundle(bundle: ForensicRunBundle): string {
@@ -123,8 +125,6 @@ export function EstateIntake() {
     router.push(`/investigacion/${stored.runId}`);
   };
 
-  const EstateIcon = selectedFileName ? fileTypeIcon(selectedFileName) : Upload;
-
   return (
     <section className="w-full max-w-xl border-t border-ramrod-foreground/15 pt-4" aria-labelledby="estate-intake-title">
       <input ref={estateInputRef} type="file" accept=".zip,.db,.sqlite,.sqlite3,application/zip,application/x-sqlite3" className="sr-only" onChange={handleEstateChange} />
@@ -141,7 +141,7 @@ export function EstateIntake() {
       </div>
       <div className="mt-3 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto_auto]">
         <button type="button" disabled={isWorking} onClick={() => estateInputRef.current?.click()} className="flex min-w-0 items-center gap-3 border border-ramrod-foreground/20 bg-ramrod-card/35 px-4 py-3 text-left transition-colors hover:border-ramrod-primary disabled:cursor-wait disabled:opacity-70">
-          {isWorking ? <LoaderCircle className="h-4 w-4 shrink-0 animate-spin text-ramrod-primary" aria-hidden="true" /> : stage === "COMPLETED" ? <CheckCircle2 className="h-4 w-4 shrink-0 text-ramrod-primary" aria-hidden="true" /> : <EstateIcon className="h-4 w-4 shrink-0 text-ramrod-primary" aria-hidden="true" />}
+          {isWorking ? <LoaderCircle className="h-4 w-4 shrink-0 animate-spin text-ramrod-primary" aria-hidden="true" /> : stage === "COMPLETED" ? <CheckCircle2 className="h-4 w-4 shrink-0 text-ramrod-primary" aria-hidden="true" /> : <EstateFileIcon name={selectedFileName} />}
           <span className="min-w-0"><span className="block truncate text-xs font-semibold text-ramrod-foreground">{selectedFileName || "Seleccionar estate"}</span><span className="mt-0.5 block text-[9px] font-bold tracking-[0.12em] text-ramrod-muted-foreground">{stage === "IDLE" ? "ZIP / SQLITE" : stage}</span></span>
         </button>
         <button type="button" disabled={isWorking} onClick={() => replayInputRef.current?.click()} className="flex h-11 items-center justify-center border border-ramrod-foreground/20 px-3 text-ramrod-muted-foreground transition-colors hover:border-ramrod-primary hover:text-ramrod-primary disabled:opacity-60" aria-label="Cargar run bundle para replay" title="Replay Run">

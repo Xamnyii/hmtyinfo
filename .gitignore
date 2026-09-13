@@ -33,6 +33,7 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.production.example
+!.env.local.example
 atlas-credentials.env
 
 # vercel
@@ -41,3 +42,9 @@ atlas-credentials.env
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local external service runtimes
+external/**/.venv/
+external/**/.venv-win/
+external/**/__pycache__/
+external/**/.pytest_cache/

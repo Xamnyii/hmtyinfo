@@ -1,5 +1,3 @@
-import { ObjectId } from 'mongodb';
-
 declare module '@hmtyauth/types' {
   export interface User {
     _id?: string;

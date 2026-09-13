@@ -6,6 +6,15 @@ import { isValidBusinessEmail, isValidPassword } from './validation';
 
 const USERS_COLLECTION = 'users';
 
+function withoutPassword(user: User): Omit<User, 'password'> {
+  return {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    createdAt: user.createdAt,
+  };
+}
+
 // Hash password
 async function hashPassword(password: string): Promise<string> {
   const salt = await bcrypt.genSalt(10);
@@ -71,9 +80,7 @@ export async function registerUser(userInput: UserInput): Promise<{ user: Omit<U
       };
     }
 
-    // Return user without password
-    const { password, ...userWithoutPassword } = createdUser;
-    return { user: userWithoutPassword };
+    return { user: withoutPassword(createdUser) };
   } catch (error) {
     console.error('Error registering user:', error);
     return { 
@@ -103,9 +110,7 @@ export async function loginUser(loginInput: LoginInput): Promise<{ user: Omit<Us
       return { user: null, error: 'Correo electrónico o contraseña incorrectos' };
     }
 
-    // Return user without password
-    const { password, ...userWithoutPassword } = user;
-    return { user: userWithoutPassword };
+    return { user: withoutPassword(user) };
   } catch (error) {
     console.error('Error logging in:', error);
     return { user: null, error: 'Error al iniciar sesión' };
@@ -125,8 +130,7 @@ export async function getUserById(id: string): Promise<Omit<User, 'password'> | 
       return null;
     }
     
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    return withoutPassword(user);
   } catch (error) {
     console.error('Error getting user by ID:', error);
     return null;
@@ -145,8 +149,7 @@ export async function getUserByEmail(email: string): Promise<Omit<User, 'passwor
       return null;
     }
     
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    return withoutPassword(user);
   } catch (error) {
     console.error('Error getting user by email:', error);
     return null;

@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-app: Montserrat, "Segoe UI", Arial, sans-serif;
 }
 
 @theme inline {
@@ -15,8 +16,8 @@
   --color-ramrod-muted: hsl(var(--ramrod-muted));
   --color-ramrod-muted-foreground: hsl(var(--ramrod-muted-foreground));
   --color-ramrod-border: hsl(var(--ramrod-border));
-  --font-sans: var(--font-montserrat);
-  --font-mono: var(--font-montserrat);
+  --font-sans: var(--font-app);
+  --font-mono: var(--font-app);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -29,7 +30,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-montserrat), sans-serif;
+  font-family: var(--font-app);
 }
 
 :root {

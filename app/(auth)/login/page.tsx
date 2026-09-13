@@ -13,6 +13,7 @@ const AnimationSection = memo(() => (
 		<div className={styles.artCopy}><h2>Detecta fraudes antes de pagar.</h2></div>
 	</section>
 ));
+AnimationSection.displayName = "AnimationSection";
 
 export default function LoginPage() {
 	const router = useTransitionRouter();

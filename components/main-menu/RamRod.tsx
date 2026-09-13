@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, Mic, Radio } from "lucide-react";
+import { Activity, Bot, Mic, Radio, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { CfdiIntake } from "@/components/investigation/CfdiIntake";
@@ -19,6 +19,30 @@ const riskClasses: Record<RiskLevel, string> = {
   red: "bg-red-500",
 };
 
+type AgentMessage = {
+  role: "user" | "agent";
+  content: string;
+};
+
+function answerCommandCenterQuestion(question: string): string {
+  const normalized = question.toLowerCase();
+
+  if (/xml|factura|cfdi/.test(normalized)) {
+    return "Sube uno o varios XML en el bloque de facturas. Si el servicio Python no está disponible, puedo hacer un análisis local básico en el navegador y abrir una investigación con entidades, evidencia y señales.";
+  }
+  if (/estate|zip|sqlite|db|forense/.test(normalized)) {
+    return "Para estate necesito el archivo .zip, .db, .sqlite o .sqlite3. Ese análisis sí usa el servicio forense Python; si no está corriendo, te voy a mostrar un error claro en vez de quedarme en silencio.";
+  }
+  if (/mcp|herramienta|conexion|extern/.test(normalized)) {
+    return "Las conexiones externas pasan por MCP. Si MCP_SERVER_URL no está configurado, la investigación sigue con evidencia local y marca esas herramientas como no disponibles.";
+  }
+  if (/riesgo|fraude|alerta|señal|senal/.test(normalized)) {
+    return "Puedo explicar señales como UUID duplicado, emisor y receptor iguales, falta de timbre fiscal y relaciones de facturación. La clasificación es preliminar: describe patrones, no acusa fraude por sí sola.";
+  }
+
+  return "Estoy listo para investigar. Para resultados reales, sube XML CFDI o un estate; desde ahí genero un caso, ejecuto el flujo de análisis y respondo preguntas con base en la evidencia encontrada.";
+}
+
 function AgentState({ status }: { status: AgentStatus }) {
   return (
     <div className="flex items-center gap-2 text-[10px] font-bold tracking-[0.14em] text-ramrod-muted-foreground">
@@ -34,6 +58,13 @@ function AgentState({ status }: { status: AgentStatus }) {
 export function RamRod() {
   const [query, setQuery] = useState("");
   const [isListening, setIsListening] = useState(false);
+  const [agentStatus, setAgentStatus] = useState<AgentStatus>(mockAgentStatus);
+  const [messages, setMessages] = useState<AgentMessage[]>([
+    {
+      role: "agent",
+      content: "RamRod listo. Sube CFDI XML para analizar facturas o pregúntame qué conexión necesitas revisar.",
+    },
+  ]);
 
   const handleMicClick = () => {
     setIsListening((previousValue) => {
@@ -49,8 +80,15 @@ export function RamRod() {
 
     if (!trimmedQuery) return;
 
-    toast(`Investigando: "${trimmedQuery}"`);
+    setAgentStatus("ANALYZING");
+    setMessages((currentMessages) => [
+      ...currentMessages,
+      { role: "user", content: trimmedQuery },
+      { role: "agent", content: answerCommandCenterQuestion(trimmedQuery) },
+    ]);
+    toast("RamRod respondió en el centro de comando.");
     setQuery("");
+    window.setTimeout(() => setAgentStatus("IDLE"), 350);
   };
 
   return (
@@ -61,7 +99,7 @@ export function RamRod() {
             <div className={`ramrod-orb-glow${isListening ? " ramrod-orb-glow-active" : ""}`} />
             <div className="ramrod-orb" data-tour="ai-agent" />
           </div>
-          <AgentState status={mockAgentStatus} />
+          <AgentState status={agentStatus} />
         </div>
 
         <button
@@ -75,14 +113,33 @@ export function RamRod() {
         </button>
 
         <form onSubmit={handleSubmit} className="w-full max-w-xl" aria-label="Buscar o investigar">
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            type="text"
-            placeholder="Investiga..."
-            className="w-full rounded-full border border-ramrod-foreground/25 bg-ramrod-card/60 px-5 py-3 text-sm text-ramrod-foreground placeholder:text-ramrod-muted-foreground shadow-sm outline-none backdrop-blur transition-colors focus:border-ramrod-primary"
-          />
+          <div className="flex rounded-full border border-ramrod-foreground/25 bg-ramrod-card/60 shadow-sm backdrop-blur transition-colors focus-within:border-ramrod-primary">
+            <input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              type="text"
+              placeholder="Investiga..."
+              className="min-w-0 flex-1 rounded-full bg-transparent px-5 py-3 text-sm text-ramrod-foreground placeholder:text-ramrod-muted-foreground outline-none"
+            />
+            <button type="submit" aria-label="Enviar pregunta a RamRod" className="mr-1 flex h-10 w-10 shrink-0 items-center justify-center self-center rounded-full text-ramrod-primary transition-colors hover:bg-ramrod-primary/10">
+              <Send className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
         </form>
+
+        <section className="w-full max-w-xl border-y border-ramrod-foreground/10 py-3" aria-label="Respuesta del agente RamRod">
+          <div className="flex items-center gap-2 text-[10px] font-bold tracking-[0.14em] text-ramrod-muted-foreground">
+            <Bot className="h-3.5 w-3.5 text-ramrod-primary" aria-hidden="true" />
+            <span>COMMAND CENTER AGENT</span>
+          </div>
+          <div className="mt-3 max-h-36 space-y-2 overflow-auto pr-1">
+            {messages.slice(-4).map((message, index) => (
+              <p key={`${message.role}-${index}-${message.content}`} className={`text-xs leading-relaxed ${message.role === "agent" ? "text-ramrod-foreground" : "text-ramrod-muted-foreground"}`}>
+                <span className="font-bold text-ramrod-primary">{message.role === "agent" ? "RamRod" : "Tú"}:</span> {message.content}
+              </p>
+            ))}
+          </div>
+        </section>
 
         <CfdiIntake />
         <EstateIntake />

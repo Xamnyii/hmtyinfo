@@ -240,7 +240,7 @@ export function InvestigationWorkspace() {
         return { status: "ready", draft: nextDraft };
       });
     });
-  }, [readyCaseId]);
+  }, [draftState, readyCaseId]);
 
   if (draftState.status === "loading") {
     return <div className="flex flex-1 items-center justify-center px-6 text-xs font-bold tracking-[0.14em] text-ramrod-muted-foreground">ABRIENDO INVESTIGACIÓN</div>;

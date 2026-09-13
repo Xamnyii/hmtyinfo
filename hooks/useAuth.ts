@@ -49,7 +49,7 @@ export function useAuth(): AuthState {
             });
           }
         }
-      } catch (err) {
+      } catch {
         setAuthState({
           user: null,
           isLogged: false,
@@ -132,5 +132,5 @@ export async function useRegister(name: string, email: string, password: string)
 export function logout(): void {
   localStorage.removeItem('hmtyauth_user');
   localStorage.removeItem('hmtyauth_logged');
-  window.location.href = '/login';
+  window.location.replace(new URL('/mainpage', window.location.origin));
 }

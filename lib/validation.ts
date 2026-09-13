@@ -84,9 +84,6 @@ export function isValidBusinessEmail(email: string): { valid: boolean; reason?: 
     }
   }
 
-  // Verificar si es un dominio genérico de primer nivel que no suele ser de empresa
-  // (gmail.com, yahoo.com, etc. ya están bloqueados arriba, pero bloqueamos más)
-  const freeDomains = ['com', 'net', 'org', 'io', 'co', 'ai', 'app', 'dev', 'tech', 'online'];
   const domainParts = domain.split('.');
   
   // Si el dominio tiene solo 2 partes (ej: empresa.com) y la segunda parte es genérica

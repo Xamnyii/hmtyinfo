@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 import type { WalkthroughStep } from "@/config/walkthroughSteps";
 
 type WalkthroughTooltipProps = {
