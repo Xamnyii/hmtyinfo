@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, Bot, Mic, Radio, Send } from "lucide-react";
+import { Activity, BarChart3, Bot, CheckCircle2, Mic, Radio, Send, ShieldAlert, Table2 } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { CfdiIntake } from "@/components/investigation/CfdiIntake";
@@ -10,6 +10,7 @@ import {
   mockMcpStatus,
   mockRecentInvestigations,
   type AgentStatus,
+  type RecentInvestigation,
   type RiskLevel,
 } from "./command-center-data";
 
@@ -19,10 +20,122 @@ const riskClasses: Record<RiskLevel, string> = {
   red: "bg-red-500",
 };
 
+const riskTextClasses: Record<RiskLevel, string> = {
+  gray: "text-ramrod-muted-foreground",
+  orange: "text-orange-500",
+  red: "text-red-500",
+};
+
+const verdictClasses: Record<RecentInvestigation["comparisonRows"][number]["verdict"], string> = {
+  OK: "text-ramrod-primary",
+  Revisar: "text-orange-500",
+  "Alto riesgo": "text-red-500",
+};
+
 type AgentMessage = {
   role: "user" | "agent";
   content: string;
 };
+
+function metricBars(investigation: RecentInvestigation): Array<{ label: string; value: number; display: string }> {
+  return [
+    { label: "Riesgo", value: investigation.metrics.riskScore, display: `${investigation.metrics.riskScore}/100` },
+    { label: "Confianza IA", value: investigation.confidence, display: `${investigation.confidence}%` },
+    { label: "Evidencia", value: Math.min(100, investigation.metrics.evidence * 7), display: `${investigation.metrics.evidence} items` },
+    { label: "MCP", value: Math.min(100, investigation.metrics.mcpMatches * 18), display: `${investigation.metrics.mcpMatches} leads` },
+  ];
+}
+
+function ConfirmationIcon({ risk }: { risk: RiskLevel }) {
+  if (risk === "red") return <ShieldAlert className="h-4 w-4 text-red-500" aria-hidden="true" />;
+  return <CheckCircle2 className={`h-4 w-4 ${risk === "orange" ? "text-orange-500" : "text-ramrod-primary"}`} aria-hidden="true" />;
+}
+
+function InvestigationDetail({ investigation }: { investigation: RecentInvestigation }) {
+  const bars = metricBars(investigation);
+
+  return (
+    <section className="border-t border-ramrod-foreground/15 pt-5" aria-labelledby="investigation-diagnostic-title">
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.15fr)]">
+        <div className="border border-ramrod-foreground/15 bg-ramrod-card/35 p-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold tracking-[0.14em] text-ramrod-primary">{investigation.caseId}</p>
+              <h3 id="investigation-diagnostic-title" className="mt-1 truncate text-base font-bold text-ramrod-foreground">{investigation.company}</h3>
+            </div>
+            <span className={`shrink-0 text-[10px] font-bold tracking-[0.12em] ${riskTextClasses[investigation.risk]}`}>{investigation.diagnosis.toUpperCase()}</span>
+          </div>
+
+          <div className="mt-4 flex items-start gap-2 border-l border-ramrod-primary pl-3">
+            <Bot className="mt-0.5 h-4 w-4 shrink-0 text-ramrod-primary" aria-hidden="true" />
+            <p className="text-xs leading-relaxed text-ramrod-foreground">{investigation.aiSummary}</p>
+          </div>
+
+          <div className="mt-4 flex items-start gap-2 bg-ramrod-muted/55 px-3 py-2">
+            <ConfirmationIcon risk={investigation.risk} />
+            <p className="text-[11px] leading-relaxed text-ramrod-muted-foreground">{investigation.confirmation}</p>
+          </div>
+
+          <dl className="mt-4 grid grid-cols-2 gap-3">
+            <div><dt className="text-[9px] font-bold tracking-[0.12em] text-ramrod-muted-foreground">MONTO</dt><dd className="mt-1 text-sm font-bold text-ramrod-foreground">{investigation.amount}</dd></div>
+            <div><dt className="text-[9px] font-bold tracking-[0.12em] text-ramrod-muted-foreground">FACTURAS</dt><dd className="mt-1 text-sm font-bold text-ramrod-foreground">{investigation.metrics.invoices}</dd></div>
+          </dl>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
+          <section className="border border-ramrod-foreground/15 p-4" aria-labelledby="risk-chart-title">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="h-3.5 w-3.5 text-ramrod-primary" aria-hidden="true" />
+              <h4 id="risk-chart-title" className="text-[10px] font-bold tracking-[0.14em] text-ramrod-muted-foreground">RESPALDO GRÁFICO</h4>
+            </div>
+            <div className="mt-4 space-y-3">
+              {bars.map((bar) => (
+                <div key={bar.label}>
+                  <div className="mb-1 flex justify-between gap-3 text-[10px] font-bold tracking-[0.08em]">
+                    <span className="text-ramrod-muted-foreground">{bar.label}</span>
+                    <span className="text-ramrod-foreground">{bar.display}</span>
+                  </div>
+                  <div className="h-2 bg-ramrod-muted">
+                    <div className={`h-full ${investigation.risk === "red" ? "bg-red-500" : investigation.risk === "orange" ? "bg-orange-500" : "bg-ramrod-primary"}`} style={{ width: `${bar.value}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="min-w-0 border border-ramrod-foreground/15 p-4" aria-labelledby="comparison-table-title">
+            <div className="flex items-center gap-2">
+              <Table2 className="h-3.5 w-3.5 text-ramrod-primary" aria-hidden="true" />
+              <h4 id="comparison-table-title" className="text-[10px] font-bold tracking-[0.14em] text-ramrod-muted-foreground">TABLA COMPARATIVA</h4>
+            </div>
+            <div className="mt-3 overflow-x-auto">
+              <table className="w-full min-w-[430px] border-collapse text-left text-[10px]">
+                <thead className="border-b border-ramrod-foreground/15 text-ramrod-muted-foreground">
+                  <tr>
+                    <th className="py-2 pr-3 font-bold tracking-[0.1em]">FACTOR</th>
+                    <th className="px-3 py-2 font-bold tracking-[0.1em]">OBSERVADO</th>
+                    <th className="px-3 py-2 font-bold tracking-[0.1em]">ESPERADO</th>
+                    <th className="py-2 pl-3 font-bold tracking-[0.1em]">VEREDICTO</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-ramrod-foreground/10 text-ramrod-foreground">
+                  {investigation.comparisonRows.map((row) => (
+                    <tr key={row.factor}>
+                      <td className="py-2 pr-3 font-semibold">{row.factor}</td>
+                      <td className="px-3 py-2">{row.observed}</td>
+                      <td className="px-3 py-2 text-ramrod-muted-foreground">{row.expected}</td>
+                      <td className={`py-2 pl-3 font-bold ${verdictClasses[row.verdict]}`}>{row.verdict}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function answerCommandCenterQuestion(question: string): string {
   const normalized = question.toLowerCase();
@@ -59,12 +172,28 @@ export function RamRod() {
   const [query, setQuery] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [agentStatus, setAgentStatus] = useState<AgentStatus>(mockAgentStatus);
+  const [selectedInvestigationId, setSelectedInvestigationId] = useState(mockRecentInvestigations[0]?.caseId ?? "");
   const [messages, setMessages] = useState<AgentMessage[]>([
     {
       role: "agent",
       content: "RamRod listo. Sube CFDI XML para analizar facturas o pregúntame qué conexión necesitas revisar.",
     },
   ]);
+  const selectedInvestigation = mockRecentInvestigations.find((investigation) => investigation.caseId === selectedInvestigationId) ?? mockRecentInvestigations[0];
+
+  const openInvestigation = (investigation: RecentInvestigation) => {
+    setSelectedInvestigationId(investigation.caseId);
+    setAgentStatus(investigation.risk === "red" ? "WAITING FOR HUMAN" : "ANALYZING");
+    setMessages((currentMessages) => [
+      ...currentMessages,
+      {
+        role: "agent",
+        content: `${investigation.caseId}: ${investigation.confirmation}`,
+      },
+    ]);
+    toast(`${investigation.caseId}: ${investigation.diagnosis}`);
+    window.setTimeout(() => setAgentStatus("IDLE"), 450);
+  };
 
   const handleMicClick = () => {
     setIsListening((previousValue) => {
@@ -158,7 +287,7 @@ export function RamRod() {
 
         <div className="grid divide-y divide-ramrod-foreground/10 border-y border-ramrod-foreground/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
           {mockRecentInvestigations.map((investigation) => (
-            <article key={investigation.caseId} className="group grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 px-0 py-3 transition-colors first:pt-3 hover:bg-ramrod-card/20 sm:px-4 sm:py-4">
+            <button key={investigation.caseId} type="button" onClick={() => openInvestigation(investigation)} aria-pressed={selectedInvestigationId === investigation.caseId} className={`group grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 px-0 py-3 text-left transition-colors first:pt-3 hover:bg-ramrod-card/20 sm:px-4 sm:py-4 ${selectedInvestigationId === investigation.caseId ? "bg-ramrod-primary/10" : ""}`}>
               <span className={`mt-1.5 h-2 w-2 rounded-full ${riskClasses[investigation.risk]}`} aria-label={`Riesgo ${investigation.risk}`} />
               <div className="min-w-0">
                 <div className="flex items-baseline justify-between gap-3">
@@ -170,10 +299,13 @@ export function RamRod() {
                   <Activity className="h-3 w-3 text-ramrod-primary" aria-hidden="true" />
                   <span>{investigation.status}</span>
                 </div>
+                <p className={`mt-2 text-[10px] font-bold tracking-[0.1em] ${riskTextClasses[investigation.risk]}`}>{investigation.diagnosis.toUpperCase()} · {investigation.confidence}%</p>
               </div>
-            </article>
+            </button>
           ))}
         </div>
+
+        {selectedInvestigation && <InvestigationDetail investigation={selectedInvestigation} />}
       </section>
     </div>
   );
