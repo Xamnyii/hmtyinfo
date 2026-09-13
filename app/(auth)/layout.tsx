@@ -13,7 +13,7 @@ export default function AuthLayout({
 	useEffect(() => {
 		const isLogged = localStorage.getItem('hmtyauth_logged') === 'true';
 		if (isLogged) {
-			router.push('/main/mainpage');
+			router.push('/mainpage');
 		}
 	}, [router]);
 

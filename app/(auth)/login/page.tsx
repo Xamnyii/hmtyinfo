@@ -49,7 +49,7 @@ export default function LoginPage() {
 				localStorage.setItem('hmtyauth_logged', 'true');
 				
 				setTimeout(() => {
-					router.push('/main/mainpage');
+					router.push('/mainpage');
 				}, 1500);
 			}
 		} catch (err) {

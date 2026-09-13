@@ -12,7 +12,7 @@ export default function Home() {
 		
 		if (isLogged) {
 			// Si hay sesion, redirigir a mainpage
-			router.push('/main/mainpage');
+			router.push('/mainpage');
 		} else {
 			// Si no hay sesion, redirigir a mainauth
 			router.push('/mainauth');
