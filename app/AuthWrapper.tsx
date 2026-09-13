@@ -50,7 +50,7 @@ export default function AuthWrapper({ children }: { children: React.ReactNode })
       // Redirigir a mainpage si se intenta acceder a una ruta publica con sesion activa
       // (excepto las rutas de API)
       if (currentPath === '/' || currentPath === '/login' || currentPath === '/register' || currentPath === '/mainauth') {
-        router.push('/main/mainpage');
+        router.push('/mainpage');
       }
     }
   }, [isLoading, isLogged, router]);

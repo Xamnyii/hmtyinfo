@@ -8,6 +8,13 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-ramrod-card: hsl(var(--ramrod-card));
+  --color-ramrod-foreground: hsl(var(--ramrod-foreground));
+  --color-ramrod-primary: hsl(var(--ramrod-primary));
+  --color-ramrod-primary-foreground: hsl(var(--ramrod-primary-foreground));
+  --color-ramrod-muted: hsl(var(--ramrod-muted));
+  --color-ramrod-muted-foreground: hsl(var(--ramrod-muted-foreground));
+  --color-ramrod-border: hsl(var(--ramrod-border));
   --font-sans: var(--font-montserrat);
   --font-mono: var(--font-montserrat);
 }
@@ -23,4 +30,142 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-montserrat), sans-serif;
+}
+
+:root {
+  --ramrod-card: 70 40% 96%;
+  --ramrod-foreground: 160 45% 10%;
+  --ramrod-primary: 150 55% 34%;
+  --ramrod-primary-foreground: 60 40% 98%;
+  --ramrod-muted: 70 30% 90%;
+  --ramrod-muted-foreground: 155 20% 34%;
+  --ramrod-border: 150 25% 78%;
+  --ramrod-bg-from: 150 45% 82%;
+  --ramrod-bg-to: 55 55% 90%;
+  --ramrod-blob-one: 150 60% 75%;
+  --ramrod-blob-two: 60 65% 85%;
+  --ramrod-orb-edge: 78 70% 58%;
+  --ramrod-corner: 50 55% 92%;
+}
+
+html.dark {
+  --ramrod-card: 160 40% 10%;
+  --ramrod-foreground: 70 30% 95%;
+  --ramrod-primary: 150 55% 45%;
+  --ramrod-primary-foreground: 160 45% 8%;
+  --ramrod-muted: 160 30% 14%;
+  --ramrod-muted-foreground: 150 20% 65%;
+  --ramrod-border: 160 30% 20%;
+  --ramrod-bg-from: 165 55% 10%;
+  --ramrod-bg-to: 150 40% 20%;
+  --ramrod-blob-one: 165 55% 16%;
+  --ramrod-blob-two: 150 50% 24%;
+  --ramrod-orb-edge: 168 60% 45%;
+  --ramrod-corner: 165 45% 14%;
+}
+
+.ramrod-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(135deg, hsl(var(--ramrod-bg-from)), hsl(var(--ramrod-bg-to)));
+  transition: background 700ms;
+}
+
+.ramrod-blob {
+  position: absolute;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 9999px;
+  opacity: 0.6;
+  filter: blur(64px);
+}
+
+.ramrod-blob-one {
+  top: -25%;
+  left: -25%;
+  background: radial-gradient(circle, hsl(var(--ramrod-blob-one)) 0%, transparent 70%);
+  animation: ramrod-blob-float-one 18s ease-in-out infinite;
+}
+
+.ramrod-blob-two {
+  right: -25%;
+  bottom: -33%;
+  width: 65vmax;
+  height: 65vmax;
+  background: radial-gradient(circle, hsl(var(--ramrod-blob-two)) 0%, transparent 70%);
+  animation: ramrod-blob-float-two 22s ease-in-out infinite;
+}
+
+.ramrod-corner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 7rem;
+  height: 7rem;
+  pointer-events: none;
+  background: hsl(var(--ramrod-corner));
+  clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+
+.ramrod-orb-glow {
+  position: absolute;
+  width: 16rem;
+  height: 16rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, hsl(var(--ramrod-orb-edge)) 0%, transparent 72%);
+  filter: blur(64px);
+  animation: ramrod-orb-glow 6s ease-in-out infinite;
+}
+
+.ramrod-orb-glow-active {
+  opacity: 1;
+  animation: none;
+}
+
+.ramrod-orb {
+  position: relative;
+  width: 14rem;
+  height: 14rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 50% 38%, #050505 0%, #050505 52%, hsl(var(--ramrod-orb-edge)) 100%);
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  animation: ramrod-orb-breathe 6s ease-in-out infinite;
+}
+
+@keyframes ramrod-blob-float-one {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(6%, 8%) scale(1.12); }
+  66% { transform: translate(-5%, 4%) scale(0.95); }
+}
+
+@keyframes ramrod-blob-float-two {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-8%, -5%) scale(0.9); }
+  66% { transform: translate(4%, -8%) scale(1.15); }
+}
+
+@keyframes ramrod-orb-breathe {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.035); filter: brightness(1.08); }
+}
+
+@keyframes ramrod-orb-glow {
+  0%, 100% { opacity: 0.65; transform: scale(1); }
+  50% { opacity: 0.95; transform: scale(1.08); }
+}
+
+@media (min-width: 640px) {
+  .ramrod-corner { width: 8rem; height: 8rem; }
+  .ramrod-orb-glow { width: 20rem; height: 20rem; }
+  .ramrod-orb { width: 18rem; height: 18rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ramrod-blob-one,
+  .ramrod-blob-two,
+  .ramrod-orb,
+  .ramrod-orb-glow { animation: none; }
 }
