@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useTransitionRouter } from "next-transition-router";
 import { walkthroughSteps } from "@/config/walkthroughSteps";
+import { readActiveCaseDraft } from "@/components/investigation/case-draft-storage";
 import { WalkthroughTooltip } from "@/components/onboarding/WalkthroughTooltip";
 
 const STORAGE_KEY = "forensic_walkthrough_completed";
@@ -14,7 +15,11 @@ type TooltipPosition = { left: number; top: number; placement: Placement };
 
 type TargetMeta = { rect: DOMRect | null; element: Element | null };
 
-export function Walkthrough() {
+type WalkthroughProps = {
+  autoStart?: boolean;
+};
+
+export function Walkthrough({ autoStart = true }: WalkthroughProps) {
   const pathname = usePathname();
   const router = useTransitionRouter();
   const [current, setCurrent] = useState(0);
@@ -22,7 +27,7 @@ export function Walkthrough() {
   const [targetMeta, setTargetMeta] = useState<TargetMeta>({ rect: null, element: null });
   const [tipPosition, setTipPosition] = useState<TooltipPosition>({ left: 0, top: 0, placement: "right" });
 
-  const step = walkthroughSteps[current] ?? walkthroughSteps[0];
+  const step = useMemo(() => walkthroughSteps[current] ?? walkthroughSteps[0], [current]);
 
   const close = useCallback(() => {
     setVisible(false);
@@ -35,18 +40,45 @@ export function Walkthrough() {
     close();
   }, [close]);
 
+  const routeMatches = useCallback((currentPath: string, route: string) => {
+    if (route === "*") return true;
+    if (!route || route === "/") return true;
+    return currentPath === route || currentPath.startsWith(`${route}/`) || currentPath.startsWith(route);
+  }, []);
+
+  const resolveStepRoute = useCallback((route: string) => {
+    if (route !== "/investigacion") return route;
+
+    if (typeof window === "undefined") return "/mainpage";
+
+    const draft = readActiveCaseDraft();
+    if (draft?.caseId) {
+      return `/investigacion/${draft.caseId}`;
+    }
+
+    return "/mainpage";
+  }, []);
+
   const findTarget = useCallback(() => {
     if (step.target === "body") {
       const body = document.body;
       return { rect: body.getBoundingClientRect(), element: body };
     }
 
-    const element = document.querySelector(step.target);
-    if (!element) {
+    if (!step.target) {
       return { rect: null, element: null };
     }
 
-    return { rect: element.getBoundingClientRect(), element };
+    try {
+      const element = document.querySelector(step.target);
+      if (!element) {
+        return { rect: null, element: null };
+      }
+
+      return { rect: element.getBoundingClientRect(), element };
+    } catch {
+      return { rect: null, element: null };
+    }
   }, [step]);
 
   const calculatePosition = useCallback((rect: DOMRect | null, placement: Placement = step.placement) => {
@@ -91,26 +123,26 @@ export function Walkthrough() {
   }, [step]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !autoStart) return;
+
     const hasCompleted = window.localStorage.getItem(STORAGE_KEY) === "true";
     if (!hasCompleted) {
       setVisible(true);
     }
-  }, []);
+  }, [autoStart]);
 
   useEffect(() => {
     if (!visible) return;
 
-    const target = findTarget();
-    const routeMatches = step.route === "*" || pathname.startsWith(step.route) || pathname === step.route;
-    if (!routeMatches) {
-      const nextRoute = step.route === "/investigacion" ? "/investigacion/CASE-0001" : step.route;
-      if (nextRoute && nextRoute !== pathname) {
-        router.push(nextRoute);
+    if (!routeMatches(pathname, step.route)) {
+      const targetRoute = resolveStepRoute(step.route);
+      if (targetRoute && targetRoute !== pathname && targetRoute !== "/investigacion") {
+        router.push(targetRoute);
       }
       return;
     }
 
+    const target = findTarget();
     if (!target.element || !target.rect) {
       if (current < walkthroughSteps.length - 1) {
         setCurrent((value) => value + 1);
@@ -122,7 +154,7 @@ export function Walkthrough() {
 
     setTargetMeta(target);
     calculatePosition(target.rect, step.placement);
-  }, [visible, current, pathname, step, router, findTarget, calculatePosition, close]);
+  }, [visible, current, pathname, step, router, findTarget, calculatePosition, close, routeMatches, resolveStepRoute]);
 
   useEffect(() => {
     if (!visible) return;

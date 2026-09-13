@@ -3,24 +3,24 @@
 import { useCallback, useMemo, useState } from "react";
 import { walkthroughSteps, type WalkthroughStep } from "@/config/walkthroughSteps";
 
-const STORAGE_KEY = "forensic_walkthrough_completed";
+export const WALKTHROUGH_STORAGE_KEY = "forensic_walkthrough_completed";
 
 export function useWalkthrough() {
   const [visible, setVisible] = useState(false);
 
   const enabled = useMemo(() => {
     if (typeof window === "undefined") return false;
-    return window.localStorage.getItem(STORAGE_KEY) !== "true";
+    return window.localStorage.getItem(WALKTHROUGH_STORAGE_KEY) !== "true";
   }, []);
 
   const readCompleted = useCallback(() => {
     if (typeof window === "undefined") return true;
-    return window.localStorage.getItem(STORAGE_KEY) === "true";
+    return window.localStorage.getItem(WALKTHROUGH_STORAGE_KEY) === "true";
   }, []);
 
   const setCompleted = useCallback((value: boolean) => {
     if (typeof window === "undefined") return;
-    window.localStorage.setItem(STORAGE_KEY, value ? "true" : "false");
+    window.localStorage.setItem(WALKTHROUGH_STORAGE_KEY, value ? "true" : "false");
   }, []);
 
   const run = useCallback(() => {
@@ -58,6 +58,6 @@ export function useWalkthrough() {
     complete,
     skip,
     getAvailableSteps,
-    storageKey: STORAGE_KEY,
+    storageKey: WALKTHROUGH_STORAGE_KEY,
   };
 }

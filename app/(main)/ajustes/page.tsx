@@ -3,14 +3,15 @@
 import { PlaceholderPage } from "@/components/main-menu/PlaceholderPage";
 import { RamRodFrame } from "@/components/main-menu/RamRodFrame";
 import { useTransitionRouter } from "next-transition-router";
+import { WALKTHROUGH_STORAGE_KEY } from "@/hooks/useWalkthrough";
 
 export default function SettingsPage() {
   const router = useTransitionRouter();
   const runWalkthroughAgain = () => {
     if (typeof window !== "undefined") {
-      window.localStorage.removeItem("forensic_walkthrough_completed");
+      window.localStorage.removeItem(WALKTHROUGH_STORAGE_KEY);
     }
-    router.push('/mainpage');
+    router.push("/mainpage");
   };
 
   return (
