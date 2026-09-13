@@ -1,4 +1,4 @@
-export type WalkthroughPlacement = "left" | "right" | "top" | "bottom";
+export type WalkthroughPlacement = "left" | "right" | "top" | "bottom" | "center";
 
 export type WalkthroughStep = {
   id: string;
